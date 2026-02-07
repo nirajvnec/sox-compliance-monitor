@@ -1,59 +1,58 @@
 """API Routes - Simple endpoints for infrastructure monitoring."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from datetime import datetime
 import psutil
 import platform
 import socket
 
+from auth import get_current_user
+
 router = APIRouter()
 
 
-# ==================== Health Check ====================
+# ==================== Public Routes (No login needed) ====================
 
 @router.get("/", tags=["General"])
 def home():
-    """Home endpoint."""
+    """Home endpoint. No authentication required."""
     return {"message": "Welcome to SOX Compliance Monitor API"}
 
 
 @router.get("/health", tags=["General"])
 def health_check():
-    """Check if the API is running."""
+    """Check if the API is running. No authentication required."""
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
     }
 
 
-# ==================== System Info ====================
+# ==================== Protected Routes (Login required) ====================
 
 @router.get("/api/system-info", tags=["Monitoring"])
-def get_system_info():
-    """Get basic system information."""
+def get_system_info(current_user: dict = Depends(get_current_user)):
+    """Get basic system information. Requires login."""
     return {
         "hostname": socket.gethostname(),
         "platform": platform.platform(),
         "python_version": platform.python_version(),
+        "requested_by": current_user["username"],
     }
 
 
-# ==================== CPU ====================
-
 @router.get("/api/cpu", tags=["Monitoring"])
-def get_cpu():
-    """Get CPU usage."""
+def get_cpu(current_user: dict = Depends(get_current_user)):
+    """Get CPU usage. Requires login."""
     return {
         "cpu_percent": psutil.cpu_percent(interval=1),
         "cpu_cores": psutil.cpu_count(),
     }
 
 
-# ==================== Memory ====================
-
 @router.get("/api/memory", tags=["Monitoring"])
-def get_memory():
-    """Get memory usage."""
+def get_memory(current_user: dict = Depends(get_current_user)):
+    """Get memory usage. Requires login."""
     mem = psutil.virtual_memory()
     return {
         "memory_percent": mem.percent,
@@ -63,11 +62,9 @@ def get_memory():
     }
 
 
-# ==================== Disk ====================
-
 @router.get("/api/disk", tags=["Monitoring"])
-def get_disk():
-    """Get disk usage."""
+def get_disk(current_user: dict = Depends(get_current_user)):
+    """Get disk usage. Requires login."""
     disk = psutil.disk_usage("/")
     return {
         "disk_percent": disk.percent,
@@ -77,11 +74,9 @@ def get_disk():
     }
 
 
-# ==================== All Metrics ====================
-
 @router.get("/api/metrics", tags=["Monitoring"])
-def get_all_metrics():
-    """Get all system metrics in one call."""
+def get_all_metrics(current_user: dict = Depends(get_current_user)):
+    """Get all system metrics in one call. Requires login."""
     cpu = psutil.cpu_percent(interval=1)
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage("/")
@@ -92,14 +87,13 @@ def get_all_metrics():
         "cpu_percent": cpu,
         "memory_percent": mem.percent,
         "disk_percent": disk.percent,
+        "requested_by": current_user["username"],
     }
 
 
-# ==================== SOX Compliance Check ====================
-
 @router.get("/api/compliance", tags=["Compliance"])
-def check_compliance():
-    """Run a simple SOX compliance check."""
+def check_compliance(current_user: dict = Depends(get_current_user)):
+    """Run a simple SOX compliance check. Requires login."""
     cpu = psutil.cpu_percent(interval=1)
     mem = psutil.virtual_memory()
     disk = psutil.disk_usage("/")
@@ -133,4 +127,5 @@ def check_compliance():
         "score": f"{passed}/{total}",
         "overall": "COMPLIANT" if passed == total else "NON-COMPLIANT",
         "checks": checks,
+        "checked_by": current_user["username"],
     }
