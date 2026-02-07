@@ -1,30 +1,41 @@
 import { useState, useEffect } from "react";
-import { fetchWithAuth } from "../api";
+import {
+  fetchWithAuth,
+  SystemInfo,
+  CpuData,
+  MemoryData,
+  DiskData,
+  ComplianceData,
+} from "../api";
 import MetricCard from "./MetricCard";
 import "./Dashboard.css";
 
-function Dashboard({ onLogout }) {
-  const [systemInfo, setSystemInfo] = useState(null);
-  const [cpu, setCpu] = useState(null);
-  const [memory, setMemory] = useState(null);
-  const [disk, setDisk] = useState(null);
-  const [compliance, setCompliance] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+interface DashboardProps {
+  onLogout: () => void;
+}
+
+function Dashboard({ onLogout }: DashboardProps) {
+  const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
+  const [cpu, setCpu] = useState<CpuData | null>(null);
+  const [memory, setMemory] = useState<MemoryData | null>(null);
+  const [disk, setDisk] = useState<DiskData | null>(null);
+  const [compliance, setCompliance] = useState<ComplianceData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   // Fetch all data from API
-  async function loadAllData() {
+  async function loadAllData(): Promise<void> {
     setLoading(true);
     setError("");
     try {
       // Fetch all endpoints at the same time (parallel)
       const [sysData, cpuData, memData, diskData, compData] =
         await Promise.all([
-          fetchWithAuth("/api/system-info"),
-          fetchWithAuth("/api/cpu"),
-          fetchWithAuth("/api/memory"),
-          fetchWithAuth("/api/disk"),
-          fetchWithAuth("/api/compliance"),
+          fetchWithAuth<SystemInfo>("/api/system-info"),
+          fetchWithAuth<CpuData>("/api/cpu"),
+          fetchWithAuth<MemoryData>("/api/memory"),
+          fetchWithAuth<DiskData>("/api/disk"),
+          fetchWithAuth<ComplianceData>("/api/compliance"),
         ]);
 
       setSystemInfo(sysData);
@@ -33,7 +44,7 @@ function Dashboard({ onLogout }) {
       setDisk(diskData);
       setCompliance(compData);
     } catch (err) {
-      setError("Failed to load data. " + err.message);
+      setError("Failed to load data. " + (err as Error).message);
     } finally {
       setLoading(false);
     }

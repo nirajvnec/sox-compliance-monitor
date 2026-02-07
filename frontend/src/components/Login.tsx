@@ -1,23 +1,27 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { login } from "../api";
 import "./Login.css";
 
-function Login({ onLoginSuccess }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+interface LoginProps {
+  onLoginSuccess: () => void;
+}
 
-  async function handleSubmit(e) {
+function Login({ onLoginSuccess }: LoginProps) {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault(); // Prevent page reload
     setError(""); // Clear previous errors
     setLoading(true);
 
     try {
       await login(username, password);
-      onLoginSuccess(); // Tell App.jsx that login worked
+      onLoginSuccess(); // Tell App.tsx that login worked
     } catch (err) {
-      setError(err.message); // Show error to user
+      setError((err as Error).message); // Show error to user
     } finally {
       setLoading(false);
     }

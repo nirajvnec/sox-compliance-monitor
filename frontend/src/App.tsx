@@ -6,13 +6,13 @@ import "./App.css";
 
 function App() {
   // Check if user is already logged in (token exists in localStorage)
-  const [isLoggedIn, setIsLoggedIn] = useState(!!getToken());
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(!!getToken());
 
-  function handleLoginSuccess() {
+  function handleLoginSuccess(): void {
     setIsLoggedIn(true);
   }
 
-  function handleLogout() {
+  function handleLogout(): void {
     removeToken();
     setIsLoggedIn(false);
   }

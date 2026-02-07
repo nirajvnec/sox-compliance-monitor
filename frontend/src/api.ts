@@ -5,17 +5,68 @@
  * Every protected API call automatically includes the token.
  */
 
+// ==================== Types ====================
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  username: string;
+  role: string;
+  message: string;
+}
+
+export interface SystemInfo {
+  hostname: string;
+  platform: string;
+  python_version: string;
+  requested_by: string;
+}
+
+export interface CpuData {
+  cpu_percent: number;
+  cpu_cores: number;
+}
+
+export interface MemoryData {
+  memory_percent: number;
+  total_gb: number;
+  used_gb: number;
+  free_gb: number;
+}
+
+export interface DiskData {
+  disk_percent: number;
+  total_gb: number;
+  used_gb: number;
+  free_gb: number;
+}
+
+export interface ComplianceCheck {
+  check: string;
+  value: string;
+  threshold: string;
+  status: "PASS" | "FAIL";
+}
+
+export interface ComplianceData {
+  report_time: string;
+  score: string;
+  overall: "COMPLIANT" | "NON-COMPLIANT";
+  checks: ComplianceCheck[];
+  checked_by: string;
+}
+
 // ==================== Token Management ====================
 
-function getToken() {
+export function getToken(): string | null {
   return localStorage.getItem("token");
 }
 
-function saveToken(token) {
+export function saveToken(token: string): void {
   localStorage.setItem("token", token);
 }
 
-function removeToken() {
+export function removeToken(): void {
   localStorage.removeItem("token");
 }
 
@@ -25,7 +76,10 @@ function removeToken() {
  * Login - sends username & password to get an access token.
  * Note: FastAPI expects form-encoded data, NOT JSON.
  */
-async function login(username, password) {
+export async function login(
+  username: string,
+  password: string
+): Promise<LoginResponse> {
   const formData = new URLSearchParams();
   formData.append("username", username);
   formData.append("password", password);
@@ -40,7 +94,7 @@ async function login(username, password) {
     throw new Error(errorData.detail || "Login failed");
   }
 
-  const data = await response.json();
+  const data: LoginResponse = await response.json();
   saveToken(data.access_token);
   return data;
 }
@@ -49,7 +103,7 @@ async function login(username, password) {
  * Fetch with auth - automatically attaches the Bearer token.
  * If token is expired (401), clears token and reloads page.
  */
-async function fetchWithAuth(url) {
+export async function fetchWithAuth<T>(url: string): Promise<T | null> {
   const token = getToken();
 
   const response = await fetch(url, {
@@ -68,7 +122,5 @@ async function fetchWithAuth(url) {
     throw new Error(`API error: ${response.status}`);
   }
 
-  return response.json();
+  return response.json() as Promise<T>;
 }
-
-export { getToken, saveToken, removeToken, login, fetchWithAuth };
