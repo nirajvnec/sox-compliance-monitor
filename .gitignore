@@ -37,3 +37,7 @@ Thumbs.db
 # Reports
 reports/*.json
 reports/*.html
+
+# Frontend
+frontend/node_modules/
+frontend/dist/

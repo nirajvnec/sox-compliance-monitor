@@ -1,0 +1,173 @@
+.dashboard {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+/* ==================== Header ==================== */
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-refresh {
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.btn-refresh:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-logout {
+  padding: 8px 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background: #c0392b;
+}
+
+/* ==================== Compliance Banner ==================== */
+
+.compliance-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.banner-pass {
+  background: #d4edda;
+  color: #155724;
+}
+
+.banner-fail {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.banner-score {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* ==================== Metrics Grid ==================== */
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 25px 30px;
+}
+
+/* ==================== Compliance Table ==================== */
+
+.compliance-section {
+  padding: 0 30px 30px;
+}
+
+.compliance-section h2 {
+  color: #1a1a2e;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.compliance-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.compliance-table th {
+  background: #1a1a2e;
+  color: white;
+  padding: 12px 20px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.compliance-table td {
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.compliance-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-pass {
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.status-fail {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+/* ==================== Loading & Error ==================== */
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 20px;
+  color: #666;
+  background: #f5f7fa;
+}
+
+.error-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #e74c3c;
+  font-size: 18px;
+}
+
+.error-screen button {
+  margin-top: 15px;
+  padding: 10px 25px;
+  background: #2c5364;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
