@@ -13,13 +13,13 @@ router = APIRouter()
 
 # ==================== Public Routes (No login needed) ====================
 
-@router.get("/", tags=["General"])
+@router.get("/api/home", tags=["General"])
 def home():
     """Home endpoint. No authentication required."""
     return {"message": "Welcome to SOX Compliance Monitor API"}
 
 
-@router.get("/health", tags=["General"])
+@router.get("/api/health", tags=["General"])
 def health_check():
     """Check if the API is running. No authentication required."""
     return {
